@@ -3,6 +3,17 @@ import Link from 'next/link';
 import {
   Button,
   Heading,
+  Flex,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverBody,
+  PopoverFooter,
+  PopoverArrow,
+  PopoverCloseButton,
+  PopoverAnchor,
+  Spacer,
   Table,
   Thead,
   Tbody,
@@ -14,6 +25,9 @@ import { Page } from 'components/structural/Page';
 import { useWallet } from 'hooks/useWallet';
 import { Token } from 'models/token';
 import { Board } from 'models/board';
+import { ContractFactory, ethers } from 'ethers';
+import { useBoards } from 'hooks/useBoards';
+import pinboardContract from 'contracts/pinboard.abi.json';
 
 function parseBalance(balance: number, decimals: number) {
   const b = balance / parseInt('1' + '0'.repeat(decimals));
@@ -22,11 +36,35 @@ function parseBalance(balance: number, decimals: number) {
 
 const Home: NextPage = () => {
   const { balance, boards, loading } = useWallet();
+  const { addBoard } = useBoards();
 
   const combined = balance.map((t: Token) => ({
     ...t,
     board: boards.find((b: Board) => b.token === t.tokenAddress),
   }));
+
+  const deploy = async (address: string) => {
+    const { ethereum } = window;
+
+    if (address) {
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
+
+      const factory = new ContractFactory(
+        pinboardContract.abi,
+        pinboardContract.bytecode,
+        signer,
+      );
+      const contract = await factory.deploy(
+        process.env.NEXT_PUBLIC_FEE_WALLET,
+        1, // 1% fees
+      );
+
+      await addBoard(contract.address, address.toString());
+    } else {
+      throw new Error('No token address from URL :\\');
+    }
+  };
 
   return (
     <Page>
@@ -67,11 +105,36 @@ const Home: NextPage = () => {
                     )}
 
                     {!token.board && (
-                      <Link href={`/create/${token.tokenAddress}`} passHref>
-                        <Button size="xs" variant="outline">
-                          Create Pinboard
-                        </Button>
-                      </Link>
+                      <Popover>
+                        <PopoverTrigger>
+                          {/* <Button>Trigger</Button> */}
+                          <Button size="xs" variant="outline">
+                            Create Pinboard
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent>
+                          <PopoverArrow />
+                          <PopoverCloseButton />
+                          <PopoverHeader>Create a Pinboard</PopoverHeader>
+                          <PopoverBody>
+                            This will deploy a Pinboard contract, owned by your
+                            wallet. This will be your new payroll interface for
+                            your DAO. Deployment is going to cost some gas!
+                          </PopoverBody>
+                          <PopoverFooter>
+                            <Flex>
+                              <Spacer />
+                              <Button
+                                size="xs"
+                                background="green.200"
+                                onClick={() => deploy(token.tokenAddress)}
+                              >
+                                Deploy Pinboard
+                              </Button>
+                            </Flex>
+                          </PopoverFooter>
+                        </PopoverContent>
+                      </Popover>
                     )}
                   </Td>
                 </Tr>

@@ -1,14 +1,6 @@
 import { useRouter } from 'next/router';
-import {
-  Box,
-  Button,
-  Center,
-  Flex,
-  Image,
-  Spacer,
-  Stack,
-  Text,
-} from '@chakra-ui/react';
+import { Box, Button, Flex, Spacer, Stack } from '@chakra-ui/react';
+import { Logo } from 'components/reusable/Logo';
 import { useEffect, useState } from 'react';
 
 export function Header() {
@@ -35,16 +27,7 @@ export function Header() {
 
   return (
     <Flex width="100%" borderBottom="1px solid #dde" padding={4}>
-      <Center
-        px={3}
-        onClick={() => router.push('/home')}
-        _hover={{ cursor: 'pointer' }}
-      >
-        <Image src="/pinboard.svg" height="32px" width="32px" alt="Pinboard" />
-        <Text fontWeight="bold" fontSize="20px" pl={2}>
-          Pinboard
-        </Text>
-      </Center>
+      <Logo />
       <Spacer />
       <Box>
         <Stack>

@@ -1,6 +1,7 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { Box, Button, Flex, Spacer } from '@chakra-ui/react';
+import { Logo } from 'components/reusable/Logo';
 import { useEffect, useState } from 'react';
 import { useAuth } from 'hooks/useAuth';
 
@@ -57,9 +58,7 @@ const Index: NextPage = () => {
   return (
     <Box p={5}>
       <Flex>
-        <Box>
-          <strong>pinboard</strong>.so
-        </Box>
+        <Logo />
         <Spacer />
         <Box>
           {walletCheckDone && walletCheckOk && (
