@@ -32,14 +32,14 @@ export function UpdatePersonModal({
   const [name, setName] = useState(person.name);
   const [wallet, setWallet] = useState(person.wallet);
   const [role, setRole] = useState(person.role);
-  const [rate, setRate] = useState(person.rate);
+  const [rate, setRate] = useState(person.rate.toString());
   const saveEnabled = name && wallet && role && rate;
 
   useEffect(() => {
     setName(person.name);
     setRole(person.role);
     setWallet(person.wallet);
-    setRate(person.rate);
+    setRate(person.rate.toString());
   }, [person]);
 
   const handleSave = async () => {

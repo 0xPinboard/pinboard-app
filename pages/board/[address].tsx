@@ -50,6 +50,7 @@ const Home: NextPage = () => {
     if (contract) {
       getPeople(contract);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contract]);
 
   const handleUpdateModalOpen = (person: Person) => () => {

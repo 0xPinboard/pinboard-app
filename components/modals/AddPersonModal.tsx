@@ -29,7 +29,7 @@ export function AddPersonModal({
   const [name, setName] = useState('');
   const [wallet, setWallet] = useState('');
   const [role, setRole] = useState('');
-  const [rate, setRate] = useState(0.01);
+  const [rate, setRate] = useState('0.01');
   const saveEnabled = name && wallet && role && rate;
 
   const handleSave = async () => {
@@ -43,7 +43,7 @@ export function AddPersonModal({
     setName('');
     setWallet('');
     setRole('');
-    setRate(0.01);
+    setRate('0.01');
     onClose();
   };
 
